@@ -1,18 +1,24 @@
 package domain.usecases;
 
+import java.time.LocalDate;
+import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.Collections;
+
 import core.exceptions.InvalidArgumentException;
 import core.exceptions.WriteException;
 import core.utils.fp.ThrowingFunction;
 import domain.entities.DataSaver;
-import domain.entities.core.*;
+import domain.entities.core.CommandRegisterable;
+import domain.entities.core.Disposable;
+import domain.entities.core.ExitStatus;
+import domain.entities.core.IdentifiedCommandable;
+import domain.entities.core.NestedCommandableObject;
+import domain.entities.core.Writable;
 import domain.entities.taskmanager.Deadline;
 import domain.entities.taskmanager.Event;
 import domain.entities.taskmanager.Task;
 import domain.entities.taskmanager.ToDo;
-
-import java.time.LocalDate;
-import java.time.format.DateTimeParseException;
-import java.util.ArrayList;
 
 /**
  * A {@link TaskManagerUsecase} is an usecase that manages a list of
@@ -73,6 +79,7 @@ public class TaskManagerUsecase implements CommandRegisterable {
      */
     private void addTask(Task task) {
         tasks.add(task);
+        Collections.sort(tasks);
     }
 
     /**
@@ -121,6 +128,7 @@ public class TaskManagerUsecase implements CommandRegisterable {
 
             @Override
             public ExitStatus execute(String[] tokens) {
+                Collections.sort(tasks);
                 for (int i = 0; i < tasks.size(); i++) {
                     writable.writeln((i + 1) + ". " + tasks.get(i));
                 }
